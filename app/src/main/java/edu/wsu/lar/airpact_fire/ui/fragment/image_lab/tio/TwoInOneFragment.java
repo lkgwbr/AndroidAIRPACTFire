@@ -4,22 +4,10 @@
 
 package edu.wsu.lar.airpact_fire.ui.fragment.image_lab.tio;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,11 +37,11 @@ import edu.wsu.lar.airpact_fire.R;
 
 import static android.app.Activity.RESULT_OK;
 import static edu.wsu.lar.airpact_fire.image.manager.ImageManager.adjustAndDisplayBitmap;
-import static edu.wsu.lar.airpact_fire.image.manager.ImageManager.capture;
+import static edu.wsu.lar.airpact_fire.image.manager.ImageManager.captureImage;
 import static edu.wsu.lar.airpact_fire.image.manager.ImageManager.rotate;
 
 /**
- * Single page for image capture and placement of two targets on
+ * Single page for image captureImage and placement of two targets on
  * two Points of Interest, along with the inputting of their
  * corresponding distance away from the user.
  *
@@ -63,7 +50,7 @@ import static edu.wsu.lar.airpact_fire.image.manager.ImageManager.rotate;
 public class TwoInOneFragment extends Fragment {
 
     private static final String sActionBarTitle = "Target Selections";
-    private static final int sRequestImageCapture = 1;
+//    private static final int sRequestImageCapture = 1;
     private static final int sTargetCount = 2;
     private static final int sFragmentId = 3;
 
@@ -146,7 +133,7 @@ public class TwoInOneFragment extends Fragment {
         mTargetOneDistanceLinearLayout.setBackgroundColor(Color.parseColor("#EEEEEEEE"));
 
         // Get image from user
-        capture(this, mImageInterfaceObject);
+        captureImage(this, mImageInterfaceObject);
 
         // Target movement
         mMainImageView.setOnTouchListener(new View.OnTouchListener() {
@@ -176,7 +163,8 @@ public class TwoInOneFragment extends Fragment {
         mTargetOneDistanceLinearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                mTargetOneDistanceLinearLayout.setBackgroundColor(Color.parseColor("#EEEEEEEE"));
+                mTargetOneDistanceLinearLayout.setBackgroundColor(
+                        Color.parseColor("#EEEEEEEE"));
                 mTargetTwoDistanceLinearLayout.setBackgroundColor(Color.TRANSPARENT);
                 mSelectedTargetId = 0;
                 return false;
@@ -185,7 +173,8 @@ public class TwoInOneFragment extends Fragment {
         mTargetTwoDistanceLinearLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                mTargetTwoDistanceLinearLayout.setBackgroundColor(Color.parseColor("#EEEEEEEE"));
+                mTargetTwoDistanceLinearLayout.setBackgroundColor(
+                        Color.parseColor("#EEEEEEEE"));
                 mTargetOneDistanceLinearLayout.setBackgroundColor(Color.TRANSPARENT);
                 mSelectedTargetId = 1;
                 return false;
@@ -198,7 +187,7 @@ public class TwoInOneFragment extends Fragment {
         mRetakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                capture(TwoInOneFragment.this, mImageInterfaceObject);
+                captureImage(TwoInOneFragment.this, mImageInterfaceObject);
             }
         });
 
@@ -250,33 +239,18 @@ public class TwoInOneFragment extends Fragment {
     }
 
     /**
-     * @param enabled
-     */
-    private void setInputsEnabled(boolean enabled) {
-
-        // Image
-        mMainImageView.setEnabled(enabled);
-
-        // Inputs
-        mTargetOneDistanceEditText.setEnabled(enabled);
-        mTargetTwoDistanceEditText.setEnabled(enabled);
-
-        // Buttons
-        mRetakeButton.setEnabled(enabled);
-        mFlipButton.setEnabled(enabled);
-        mProceedButton.setEnabled(enabled);
-    }
-
-    /**
+     * Handle image-capture activity result from {@link ImageManager#captureImage}.
      *
+     * @param requestCode   code of activity request
+     * @param resultCode    code indicating failure/success
+     * @param data          additional data resulting from activity (should be none)
      */
-    // TODO: Complete this in ImageManager
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == sRequestImageCapture && resultCode == RESULT_OK) &&
+        if ((requestCode == ImageManager.REQUEST_IMAGE_CAPTURE_CODE && resultCode == RESULT_OK) &&
                 null != adjustAndDisplayBitmap(getActivity(),
                         mImageInterfaceObject, mMainImageView)) {
             mPostInterfaceObject.setDate(new Date());
@@ -287,7 +261,7 @@ public class TwoInOneFragment extends Fragment {
             // If no image taken or error, go home
             Toast.makeText(getContext(),
                     "Camera failed to take picture. Please try again later.",
-                    Toast.LENGTH_LONG);
+                    Toast.LENGTH_LONG).show();
             Util.goHome(getActivity());
         }
     }

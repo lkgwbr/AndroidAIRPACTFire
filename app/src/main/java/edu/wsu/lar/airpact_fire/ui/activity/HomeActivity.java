@@ -4,10 +4,7 @@
 
 package edu.wsu.lar.airpact_fire.ui.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
-import edu.wsu.lar.airpact_fire.app.Reference;
+import edu.wsu.lar.airpact_fire.app.Constant;
 import edu.wsu.lar.airpact_fire.app.manager.AppManager;
 import edu.wsu.lar.airpact_fire.app.service.GpsService;
 import edu.wsu.lar.airpact_fire.data.interface_object.PostInterfaceObject;
@@ -74,7 +71,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mAppManager = Reference.getAppManager();
+        mAppManager = Constant.getAppManager();
         mAppManager.onActivityStart(this);
         mDataManager = mAppManager.getDataManager();
         mUserInterfaceObject = mDataManager.getApp().getLastUser();
@@ -87,38 +84,49 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        // Set action menu
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        // Set action bar
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{ Color.WHITE, Color.TRANSPARENT });
-        mActionBar.setBackgroundDrawable(gd);
         mActionBar.setTitle(mUserInterfaceObject.getUsername());
 
         // Map fragment loading
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mCaptureButton = (Button) findViewById(R.id.capture_button);
-        mGalleryButton = (Button) findViewById(R.id.gallery_button);
-
+        // ...
+        mCaptureButton = findViewById(R.id.capture_button);
+        mGalleryButton = findViewById(R.id.gallery_button);
         mCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent captureIntent = new Intent(HomeActivity.this, ImageLabActivity.class);
+                Intent captureIntent = new Intent(HomeActivity.this,
+                        ImageLabActivity.class);
                 startActivity(captureIntent);
             }
         });
         mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(HomeActivity.this, GalleryActivity.class);
+                Intent galleryIntent = new Intent(HomeActivity.this,
+                        GalleryActivity.class);
                 startActivity(galleryIntent);
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // TODO: Put these all throughout app
+        mAppManager.onActivityPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAppManager.onActivityResume();
     }
 
     @Override
@@ -141,7 +149,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
 
             case R.id.action_profile:
-                Intent userDataIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+                Intent userDataIntent = new Intent(HomeActivity.this,
+                        ProfileActivity.class);
                 startActivity(userDataIntent);
                 return true;
 

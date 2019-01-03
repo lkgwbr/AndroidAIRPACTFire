@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "edu.wsu.lar.airpact_fire"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "Alpha" // App version
+        versionCode 5
+        versionName "Beta" // App version
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
@@ -36,7 +36,7 @@ dependencies {
     implementation rootProject.files("libs/json-simple-1.1.1.jar")     // JSON Simple
 
     // Support
-    //implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:support-vector-drawable:26.1.0'

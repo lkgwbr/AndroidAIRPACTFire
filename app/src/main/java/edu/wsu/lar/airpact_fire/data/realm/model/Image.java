@@ -8,14 +8,14 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Realm model portraying a single image capture for
+ * Realm model portraying a single image captureImage for
  * some {@link Post}.
  */
 public class Image extends RealmObject {
-
     @PrimaryKey
     public int imageId;
     public int postId;
-    public String imageLocation;
+    public String rawImageLocation;
+    public String compressedImageLocation;
     public Coordinate gpsCoordinate;
 }
