@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,6 +77,14 @@ public class Util {
     // Image fields
     private static final String TRANSACTION_IMAGE_FILENAME = "transaction_image";
     private static final int IMAGE_COMPRESSION_QUALITY = 0;
+
+    /**
+     * Remove a view from the ViewGroup, and thus the activity.
+     * @param view the view to remove
+     */
+    public static void removeView(View view) {
+        ((ViewGroup) view.getParent()).removeView(view);
+    }
 
     /**
      * Check if string is null or empty.
